@@ -1,0 +1,369 @@
+@charset "utf-8"; 
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..700&family=Instrument+Serif:ital@1&family=IBM+Plex+Sans+KR:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --navy:  #111827;
+  --ivory: #F5F3EE;
+  --paper: #FBFAF7;
+  --blue:  #2563EB;
+  --slate: #94A3B8;
+  --ink-2: #374151;     /* 본문 보조 */
+  --ink-3: #475569;     /* 라벨 */
+  --line:  rgba(17, 24, 39, .12);
+
+  --font-display: 'Archivo', sans-serif;
+  --font-kr:      'IBM Plex Sans KR', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+  --font-serif:   'Instrument Serif', serif;
+}
+
+/* ---------- Reset ---------- */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+ul, ol { list-style: none; }
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; border: 0; }
+body {
+  background: var(--ivory);
+  color: var(--navy);
+  font-family: var(--font-kr);
+  font-size: 15px;
+  line-height: 1.7;
+  word-break: keep-all;          /* 한글 단어 중간에서 줄바꿈 방지 */
+}
+
+/* 화면에서 숨기고 스크린리더·Outliner에는 읽히게 */
+.hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.wrap { max-width: 1080px; margin: 0 auto; padding: 48px 32px 0; }
+
+/* =========================================================
+   1. 헤더 — 포트폴리오 Hero처럼 네이비 + 빛 번짐
+   ========================================================= */
+header {
+  position: relative;
+  overflow: hidden;
+  padding: 56px;
+  border-radius: 4px;
+  color: var(--ivory);
+  background:
+    radial-gradient(ellipse 55% 70% at 90% 110%, rgba(148,163,184,.22), transparent 70%),
+    radial-gradient(ellipse 45% 50% at 5% -10%, rgba(245,243,238,.07), transparent 70%),
+    var(--navy);
+}
+.head_main { display: flex; align-items: center; gap: 40px; }
+
+.head_main .image {
+  flex-shrink: 0;
+  width: 148px; height: 148px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid rgba(148,163,184,.4);
+  box-shadow: 0 0 0 8px rgba(148,163,184,.08);   /* 노드처럼 링 */
+}
+.head_main .image img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(.15); }
+
+.head_ttl { display: flex; flex-direction: column; gap: 12px; }
+.head_ttl::before {                                /* 작은 영문 라벨 */
+  content: 'ONLINE RESUME — CONNECTOR';
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: .16em;
+  color: var(--slate);
+}
+.head_ttl h2 {
+  font-size: clamp(40px, 5vw, 56px);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+.head_ttl span { font-size: 17px; font-weight: 300; color: #CBD5E1; }
+.head_ttl span strong { font-weight: 500; color: var(--ivory); }
+
+/* =========================================================
+   2. 섹션 공통 — 번호 + 노드(●──) 제목
+   ========================================================= */
+#contentArea { counter-reset: sec; padding: 24px 0 64px; }
+
+#contentArea section {
+  position: relative;
+  counter-increment: sec;
+  padding: 40px 0 36px;
+  border-bottom: 1px solid var(--line);
+}
+
+/* 01 · 02 … 번호 */
+#contentArea section::before {
+  content: counter(sec, decimal-leading-zero);
+  display: block;
+  margin-bottom: 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: .16em;
+  color: var(--ink-3);
+}
+
+/* 제목: ● 점 + 글자 + 끝까지 이어지는 선 */
+#contentArea h3 {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-right: 64px;            /* 토글 버튼 자리 */
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+#contentArea h3::before {
+  content: '';
+  flex-shrink: 0;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--navy);
+  transition: background .35s, box-shadow .35s;
+}
+#contentArea h3::after {
+  content: '';
+  flex-grow: 1;
+  height: 1px;
+  background: rgba(17,24,39,.18);
+  transition: background .35s;
+}
+/* 섹션에 마우스를 올리면 노드가 블루로 "연결" */
+#contentArea section:hover h3::before { background: var(--blue); box-shadow: 0 0 0 5px rgba(37,99,235,.15); }
+#contentArea section:hover h3::after  { background: var(--blue); }
+
+/* 펼치기/접기 버튼 */
+.toggle-btn {
+  position: absolute;
+  top: 58px; right: 0;
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid rgba(17,24,39,.2);
+  border-radius: 50%;
+  background: var(--ivory);
+  color: var(--navy);
+  transition: border-color .3s, color .3s, transform .4s cubic-bezier(.2,.7,.2,1);
+}
+.toggle-btn:hover, .toggle-btn:focus-visible { border-color: var(--blue); color: var(--blue); outline: none; }
+/* 아이콘 폰트(Font Awesome)가 안 불러와져도 보이도록 화살표를 CSS로 그림 */
+.toggle-btn i { display: none; }
+.toggle-btn::before {
+  content: '';
+  width: 8px; height: 8px;
+  margin-top: -4px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg);
+}
+section.is-closed .toggle-btn { transform: rotate(-90deg); }
+
+/* 내용 영역 (접힘 애니메이션) */
+.toggle-container {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 40px;
+  padding-top: 28px;
+}
+section.is-closed .toggle-container { display: none; }
+
+/* =========================================================
+   3. 섹션별 스타일
+   ========================================================= */
+
+/* --- 기본 dl: [라벨] [내용] 한 줄 --- */
+.toggle-container dl {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 16px;
+  align-items: baseline;
+  padding: 12px 0;
+  border-bottom: 1px dashed rgba(17,24,39,.1);
+}
+.toggle-container dt {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: .1em;
+  color: var(--ink-3);
+}
+.toggle-container dd { font-size: 15.5px; }
+.toggle-container dd a { border-bottom: 1px solid rgba(17,24,39,.25); transition: color .3s, border-color .3s; }
+.toggle-container dd a:hover { color: var(--blue); border-color: var(--blue); }
+
+/* --- 학력 · 경력 · 교육: 타임라인형 (한 줄에 하나) --- */
+.school .toggle-container,
+.career .toggle-container,
+.edu .toggle-container { grid-template-columns: 1fr; gap: 0; }
+
+.school dl, .career dl, .edu dl {
+  position: relative;
+  grid-template-columns: 1fr;
+  gap: 6px;
+  padding: 18px 0 18px 28px;
+  border-bottom: none;
+  border-left: 1px solid rgba(17,24,39,.15);     /* 세로 연결선 */
+}
+.school dl::before, .career dl::before, .edu dl::before {     /* 노드 */
+  content: '';
+  position: absolute;
+  left: -5px; top: 26px;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  border: 1.5px solid var(--navy);
+  background: var(--ivory);
+  transition: background .3s, border-color .3s;
+}
+.school dl:hover::before, .career dl:hover::before, .edu dl:hover::before { background: var(--blue); border-color: var(--blue); }
+
+.school dt, .career dt, .edu dt {
+  font-family: var(--font-kr);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--navy);
+}
+.school dd, .career dd, .edu dd { color: var(--ink-2); }
+.school dd span, .career dd span, .edu dd span {     /* 기간 */
+  display: block;
+  margin-bottom: 2px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: .06em;
+  color: var(--ink-3);
+}
+
+/* --- 포트폴리오: 카드 2열 --- */
+.portfolio .toggle-container { display: block; }
+.portfolio ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.portfolio li {
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  border: 1px solid rgba(17,24,39,.1);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: border-color .35s, transform .35s, box-shadow .35s;
+}
+.portfolio li:hover {
+  border-color: var(--blue);
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px -24px rgba(17,24,39,.35);
+}
+.portfolio li img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  background: var(--navy);
+}
+.portfolio dl {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px 22px 24px;
+  border: none;
+}
+.portfolio dt { font-family: var(--font-kr); font-size: 18px; font-weight: 600; letter-spacing: -0.01em; color: var(--navy); }
+.portfolio dd { font-size: 14px; line-height: 1.75; color: var(--ink-2); }
+.portfolio dd a {                                   /* 링크: 알약 버튼 (설명과 줄 분리) */
+  display: flex; width: fit-content; align-items: center; gap: 6px;
+  margin-bottom: 10px;
+  padding: 6px 14px;
+  border: 1px solid rgba(17,24,39,.22);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: .06em;
+  color: var(--navy);
+}
+.portfolio dd a::after { content: '↗'; }
+.portfolio dd a:hover { border-color: var(--blue); color: var(--blue); }
+
+/* --- 직무능력: 2열, 기술명 굵게 --- */
+.ability dl { grid-template-columns: 1fr; gap: 6px; padding: 16px 0; }
+.ability dt {
+  font-family: var(--font-display);
+  font-variation-settings: 'wdth' 112;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--navy);
+}
+.ability dd { font-size: 14px; color: var(--ink-2); }
+.ability dd a { display: inline-block; margin-top: 6px; font-family: var(--font-mono); font-size: 12px; }
+
+/* --- 자격증: 이름 / 날짜 / 기관 --- */
+.certificate dl { grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto auto; row-gap: 2px; padding: 16px 0; }
+.certificate dt { grid-column: 1; grid-row: 1 / 3; align-self: center; font-family: var(--font-kr); font-size: 16px; font-weight: 600; letter-spacing: -0.01em; color: var(--navy); }
+.certificate dd { grid-column: 2; text-align: right; font-size: 13px; color: var(--ink-2); }
+.certificate dd:nth-of-type(1) { font-family: var(--font-mono); font-size: 12px; color: var(--ink-3); }
+
+/* =========================================================
+   4. 푸터 — 포트폴리오 엔딩처럼 네이비 CTA
+   ========================================================= */
+footer {
+  margin-bottom: 48px;
+  padding: 48px 56px;
+  border-radius: 4px;
+  color: var(--ivory);
+  background:
+    radial-gradient(ellipse 50% 80% at 100% 0%, rgba(148,163,184,.2), transparent 70%),
+    var(--navy);
+}
+.footer_inner { display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
+.footer_inner p { display: flex; flex-direction: column; gap: 6px; font-size: 24px; font-weight: 300; letter-spacing: -0.02em; line-height: 1.3; }
+.footer_inner p::before {                          /* 엔딩 섹션과 같은 문구 */
+  content: "Let's Connect.";
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 34px;
+  letter-spacing: -0.01em;
+}
+.footer_inner a {
+  display: inline-flex; align-items: center; gap: 10px;
+  min-height: 48px; padding: 0 24px;
+  border: 1px solid rgba(148,163,184,.45);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: .1em;
+  transition: border-color .3s, color .3s;
+}
+.footer_inner a:hover { border-color: var(--blue); color: var(--blue); }
+
+/* =========================================================
+   5. 반응형
+   ========================================================= */
+@media (max-width: 768px) {
+  .wrap { padding: 20px 16px 0; }
+  header { padding: 36px 24px; }
+  .head_main { flex-direction: column; align-items: flex-start; gap: 24px; }
+  .head_main .image { width: 112px; height: 112px; }
+
+  .toggle-container { grid-template-columns: 1fr; gap: 0; }
+  .portfolio ul { grid-template-columns: 1fr; }
+  .toggle-container dl { grid-template-columns: 80px minmax(0, 1fr); }
+
+  footer { padding: 36px 24px; }
+  .footer_inner p { font-size: 19px; }
+  .footer_inner p::before { font-size: 28px; }
+}
+
+/* =========================================================
+   6. 인쇄 (PDF 저장 시) — 모두 펼치고 잉크 절약
+   ========================================================= */
+@media print {
+  body { background: #fff; font-size: 12px; }
+  .wrap { max-width: none; padding: 0; }
+  header, footer { background: #fff; color: var(--navy); border: 1px solid var(--line); }
+  .head_ttl span { color: var(--ink-2); }
+  .head_ttl span strong { color: var(--navy); }
+  .toggle-btn, footer a { display: none; }
+  section.is-closed .toggle-container { display: grid; }
+  .portfolio li { break-inside: avoid; }
+}
